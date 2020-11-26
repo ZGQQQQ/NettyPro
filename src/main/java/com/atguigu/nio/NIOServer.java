@@ -23,7 +23,7 @@ public class NIOServer {
         System.out.println("注册后的selectionkey 数量=" + selector.keys().size()); // 1
         //循环等待客户端连接
         while (true) {
-            //这里我们等待1秒，如果channel没有事件发生, 返回
+            //这里我们等待5秒，如果channel没有事件发生, 返回
             if(selector.select(5000) == 0) { //没有事件发生
                 System.out.println("服务器等待了5秒，无连接");
                 continue;
@@ -31,7 +31,7 @@ public class NIOServer {
             //如果selector.select返回的>0, 就获取到发生事件变化的selectionKey集合
             //1. 如果返回的>0， 表示已经获取到关注的事件
             //2. selector.selectedKeys() 返回的是关注事件的集合
-            //3. 通过 selectionKeys 反向获取客户端通道
+            //3. 通过 selectionKeys 反向获取客户端通道channel
             Set<SelectionKey> selectionKeys = selector.selectedKeys();
             System.out.println("selectionKeys 数量 = " + selectionKeys.size());
             //遍历 Set<SelectionKey>, 使用迭代器遍历
