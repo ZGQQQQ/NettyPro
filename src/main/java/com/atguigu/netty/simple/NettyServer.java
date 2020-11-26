@@ -21,8 +21,6 @@ public class NettyServer {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup(); //8
 
-
-
         try {
             //创建服务器端的启动对象，配置参数
             ServerBootstrap bootstrap = new ServerBootstrap();
@@ -61,14 +59,11 @@ public class NettyServer {
                 }
             });
 
-
             //对关闭通道进行监听
             cf.channel().closeFuture().sync();
         }finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-
     }
-
 }

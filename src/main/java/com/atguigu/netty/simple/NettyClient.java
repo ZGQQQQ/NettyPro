@@ -10,10 +10,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class NettyClient {
     public static void main(String[] args) throws Exception {
-
         //客户端需要一个事件循环组
         EventLoopGroup group = new NioEventLoopGroup();
-
 
         try {
             //创建客户端启动对象
@@ -38,9 +36,7 @@ public class NettyClient {
             //给关闭通道进行监听
             channelFuture.channel().closeFuture().sync();
         }finally {
-
             group.shutdownGracefully();
-
         }
     }
 }

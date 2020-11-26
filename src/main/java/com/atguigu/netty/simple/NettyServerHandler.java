@@ -24,69 +24,61 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+     //比如这里我们有一个非常耗时长的业务-> 异步执行 -> 提交该channel对应的NIOEventLoop 的 taskQueue中,
 
-/*
+     //---------------------------------解决方案1 用户程序自定义的普通任务--------------------------------------------------
+//        任务1
+//        ctx.channel().eventLoop().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(5 * 1000);//任务1会在5秒后执行
+//                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~(>^ω^<)喵2", CharsetUtil.UTF_8));
+//                    System.out.println("channel code=" + ctx.channel().hashCode());
+//                } catch (Exception ex) {
+//                    System.out.println("发生异常" + ex.getMessage());
+//                }
+//            }
+//        });
+//	     任务2
+//        ctx.channel().eventLoop().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(5 * 1000);//任务2会在10秒后执行，要等任务1执行完才会执行任务2
+//                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~(>^ω^<)喵3", CharsetUtil.UTF_8));
+//                    System.out.println("channel code=" + ctx.channel().hashCode());
+//                } catch (Exception ex) {
+//                    System.out.println("发生异常" + ex.getMessage());
+//                }
+//            }
+//        });
 
-        //比如这里我们有一个非常耗时长的业务-> 异步执行 -> 提交该channel 对应的
-        //NIOEventLoop 的 taskQueue中,
-
-        //解决方案1 用户程序自定义的普通任务
-
-        ctx.channel().eventLoop().execute(new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-                    Thread.sleep(5 * 1000);
-                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~(>^ω^<)喵2", CharsetUtil.UTF_8));
-                    System.out.println("channel code=" + ctx.channel().hashCode());
-                } catch (Exception ex) {
-                    System.out.println("发生异常" + ex.getMessage());
-                }
-            }
-        });
-
-        ctx.channel().eventLoop().execute(new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-                    Thread.sleep(5 * 1000);
-                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~(>^ω^<)喵3", CharsetUtil.UTF_8));
-                    System.out.println("channel code=" + ctx.channel().hashCode());
-                } catch (Exception ex) {
-                    System.out.println("发生异常" + ex.getMessage());
-                }
-            }
-        });
-
-        //解决方案2 : 用户自定义定时任务 -》 该任务是提交到 scheduleTaskQueue中
-
-        ctx.channel().eventLoop().schedule(new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-                    Thread.sleep(5 * 1000);
-                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~(>^ω^<)喵4", CharsetUtil.UTF_8));
-                    System.out.println("channel code=" + ctx.channel().hashCode());
-                } catch (Exception ex) {
-                    System.out.println("发生异常" + ex.getMessage());
-                }
-            }
-        }, 5, TimeUnit.SECONDS);
+//        System.out.println("go on ...");
+        //------------------------------------------------------------------------------------------------------------------
 
 
-
-        System.out.println("go on ...");*/
-
+        //-----------------------------解决方案2 : 用户自定义定时任务 -》 该任务是提交到 scheduleTaskQueue中-------------------
+//        ctx.channel().eventLoop().schedule(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(5 * 1000);
+//                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~(>^ω^<)喵4", CharsetUtil.UTF_8));
+//                    System.out.println("channel code=" + ctx.channel().hashCode());
+//                } catch (Exception ex) {
+//                    System.out.println("发生异常" + ex.getMessage());
+//                }
+//            }
+//        }, 5, TimeUnit.SECONDS);
+//        System.out.println("go on ...");
+		//------------------------------------------------------------------------------------------------------------------
 
         System.out.println("服务器读取线程 " + Thread.currentThread().getName() + " channle =" + ctx.channel());
         System.out.println("server ctx =" + ctx);
         System.out.println("看看channel 和 pipeline的关系");
         Channel channel = ctx.channel();
-        ChannelPipeline pipeline = ctx.pipeline(); //本质是一个双向链接, 出站入站
-
+        ChannelPipeline pipeline = ctx.pipeline(); //本质是一个双向链表, 出站入站
 
         //将 msg 转成一个 ByteBuf
         //ByteBuf 是 Netty 提供的，不是 NIO 的 ByteBuffer.

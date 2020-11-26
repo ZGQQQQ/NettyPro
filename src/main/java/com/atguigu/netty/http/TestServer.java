@@ -13,6 +13,7 @@ public class TestServer {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         try {
+        	//创建ServerBootstrap，ServerBootstrap的作用是启动服务端
             ServerBootstrap serverBootstrap = new ServerBootstrap();
 
             serverBootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new TestServerInitializer());

@@ -12,10 +12,8 @@ public class TestServerInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel ch) throws Exception {
 
         //向管道加入处理器
-
         //得到管道
         ChannelPipeline pipeline = ch.pipeline();
-
         //加入一个netty 提供的httpServerCodec codec =>[coder - decoder]
         //HttpServerCodec 说明
         //1. HttpServerCodec 是netty 提供的处理http的 编-解码器
