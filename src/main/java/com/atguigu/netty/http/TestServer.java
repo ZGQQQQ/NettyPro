@@ -15,7 +15,7 @@ public class TestServer {
         	//创建ServerBootstrap，ServerBootstrap的作用是启动服务端
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new TestServerInitializer());
-            ChannelFuture channelFuture = serverBootstrap.bind(6668).sync();
+            ChannelFuture channelFuture = serverBootstrap.bind(10011).sync();
             channelFuture.channel().closeFuture().sync();
         }finally {
             bossGroup.shutdownGracefully();

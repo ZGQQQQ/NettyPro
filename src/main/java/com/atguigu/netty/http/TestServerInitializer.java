@@ -8,7 +8,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 public class TestServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
-        //向管道加入处理器
+        //向管道中加入二个处理器(1-HttpServerCodec处理器；2-自定义处理器)
         //得到管道
         ChannelPipeline pipeline = ch.pipeline();
         //加入一个netty 提供的httpServerCodec codec =>[coder - decoder]

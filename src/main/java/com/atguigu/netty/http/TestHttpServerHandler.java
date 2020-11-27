@@ -18,9 +18,7 @@ public class TestHttpServerHandler extends SimpleChannelInboundHandler<HttpObjec
     //channelRead0 读取客户端数据（当有读取事件时触发该方法）
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
-        System.out.println("对应的channel=" + ctx.channel() + " pipeline=" + ctx
-        .pipeline() + " 通过pipeline获取channel" + ctx.pipeline().channel());
-
+        System.out.println("对应的channel=" + ctx.channel() + " pipeline=" + ctx.pipeline() + " 通过pipeline获取channel" + ctx.pipeline().channel());
         System.out.println("当前ctx的handler=" + ctx.handler());
 
         //判断 msg 是不是 httprequest请求
@@ -39,7 +37,7 @@ public class TestHttpServerHandler extends SimpleChannelInboundHandler<HttpObjec
                 return;
             }
             //回复信息给浏览器 [http协议]
-            ByteBuf content = Unpooled.copiedBuffer("hello, 我是服务器", CharsetUtil.UTF_8);
+            ByteBuf content = Unpooled.copiedBuffer("hello, my name is CP3", CharsetUtil.UTF_8);
 
             //构造一个http的相应，即 httpresponse
             FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content);
