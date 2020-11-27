@@ -9,7 +9,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.util.CharsetUtil;
 
 
-//说明：我们自定义一个Handler 需要继承netty 规定好的某个HandlerAdapter(规范)
+//说明：我们自定义一个Handler 需要继承netty规定好的某个HandlerAdapter(规范)
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     //读取数据(这里我们可以读取客户端发送到服务端的消息)
     /*
@@ -49,6 +49,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         });
 
         //任务1和任务2由于耗时长，会先执行该输出语句
+		ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~(>^ω^<)喵4", CharsetUtil.UTF_8));
         System.out.println("go on ...");
         //------------------------------------------------------------------------------------------------------------------
 
@@ -69,16 +70,16 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 //        System.out.println("go on ...");
 		//------------------------------------------------------------------------------------------------------------------
 
-        System.out.println("服务器读取线程 " + Thread.currentThread().getName() + " channle =" + ctx.channel());
-        System.out.println("server ctx =" + ctx);
-        System.out.println("看看channel 和 pipeline的关系");
+//        System.out.println("服务器读取线程 " + Thread.currentThread().getName() + " channle =" + ctx.channel());
+//        System.out.println("server ctx =" + ctx);
+//        System.out.println("看看channel 和 pipeline的关系");
         Channel channel = ctx.channel();
-        ChannelPipeline pipeline = ctx.pipeline(); //本质是一个双向链表, 出站入站
+//        ChannelPipeline pipeline = ctx.pipeline(); //本质是一个双向链表, 出站入站
 
         //将 msg 转成一个 ByteBuf
         //ByteBuf 是 Netty 提供的，不是 NIO 的 ByteBuffer.
         ByteBuf buf = (ByteBuf) msg;
-        System.out.println("客户端发送消息是:" + buf.toString(CharsetUtil.UTF_8));
+        System.out.println("客户端发送到服务端的消息是:" + buf.toString(CharsetUtil.UTF_8));
         System.out.println("客户端地址:" + channel.remoteAddress());
     }
 

@@ -32,12 +32,12 @@ public class NettyServer {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
 							//可以使用一个集合管理 SocketChannel，在推送消息时，可以将业务加入到各个channel对应的 NIOEventLoop的taskQueue或者scheduleTaskQueue
-                            System.out.println("客户socketchannel hashcode=" + ch.hashCode());
+                            System.out.println("客户端socketchannel hashcode=" + ch.hashCode());
                             ch.pipeline().addLast(new NettyServerHandler());
                         }
                     }); // 给我们的 workerGroup 的 EventLoop 对应的管道设置处理器
 
-            System.out.println(".....服务器 is ready...");
+            System.out.println(".....服务器 is ready。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
 
             //绑定一个端口并且同步, 生成了一个 ChannelFuture 对象，启动服务器(并绑定端口)
             ChannelFuture cf = serverBootstrap.bind(6668).sync();

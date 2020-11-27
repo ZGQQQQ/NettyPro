@@ -20,7 +20,9 @@ public class NettyClient {
 
             //设置相关参数
             bootstrap.group(group) //设置线程组
-                    .channel(NioSocketChannel.class) // 设置客户端通道的实现类(反射)
+					// 设置客户端通道的实现类(反射)
+                    .channel(NioSocketChannel.class)
+					// handler对应的是bossGroup, childHandler对应的是workerGroup
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
