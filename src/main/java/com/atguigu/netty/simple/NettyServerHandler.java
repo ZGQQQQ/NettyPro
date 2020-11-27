@@ -70,11 +70,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 //        System.out.println("go on ...");
 		//------------------------------------------------------------------------------------------------------------------
 
-//        System.out.println("服务器读取线程 " + Thread.currentThread().getName() + " channle =" + ctx.channel());
-//        System.out.println("server ctx =" + ctx);
-//        System.out.println("看看channel 和 pipeline的关系");
+        System.out.println("服务器读取线程 " + Thread.currentThread().getName() + " channle =" + ctx.channel());
+        System.out.println("server ctx =" + ctx);
+        System.out.println("看看channel 和 pipeline的关系");
         Channel channel = ctx.channel();
-//        ChannelPipeline pipeline = ctx.pipeline(); //本质是一个双向链表, 出站入站
+        ChannelPipeline pipeline = ctx.pipeline(); //本质是一个双向链表, 出站入站
 
         //将 msg 转成一个 ByteBuf
         //ByteBuf 是 Netty 提供的，不是 NIO 的 ByteBuffer.

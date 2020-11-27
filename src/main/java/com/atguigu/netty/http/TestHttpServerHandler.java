@@ -11,11 +11,11 @@ import java.net.URI;
 
 /*
 说明
-1. SimpleChannelInboundHandler 是 ChannelInboundHandlerAdapter
+1. SimpleChannelInboundHandler 是 ChannelInboundHandlerAdapter 的子类
 2. HttpObject 客户端和服务器端相互通讯的数据被封装成 HttpObject
  */
 public class TestHttpServerHandler extends SimpleChannelInboundHandler<HttpObject> {
-    //channelRead0 读取客户端数据
+    //channelRead0 读取客户端数据（当有读取事件时触发该方法）
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
         System.out.println("对应的channel=" + ctx.channel() + " pipeline=" + ctx

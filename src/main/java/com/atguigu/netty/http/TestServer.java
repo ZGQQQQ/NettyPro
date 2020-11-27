@@ -8,20 +8,15 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class TestServer {
     public static void main(String[] args) throws Exception {
-
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         try {
         	//创建ServerBootstrap，ServerBootstrap的作用是启动服务端
             ServerBootstrap serverBootstrap = new ServerBootstrap();
-
             serverBootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new TestServerInitializer());
-
             ChannelFuture channelFuture = serverBootstrap.bind(6668).sync();
-            
             channelFuture.channel().closeFuture().sync();
-
         }finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
