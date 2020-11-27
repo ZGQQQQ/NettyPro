@@ -8,53 +8,48 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.netty.util.CharsetUtil;
 
-import java.util.concurrent.TimeUnit;
 
-/*
-说明
-1. 我们自定义一个Handler 需要继续netty 规定好的某个HandlerAdapter(规范)
-2. 这时我们自定义一个Handler , 才能称为一个handler
- */
+//说明：我们自定义一个Handler 需要继承netty 规定好的某个HandlerAdapter(规范)
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
-
-    //读取数据实际(这里我们可以读取客户端发送的消息)
+    //读取数据(这里我们可以读取客户端发送到服务端的消息)
     /*
-    1. ChannelHandlerContext ctx:上下文对象, 含有 管道pipeline , 通道channel, 地址
-    2. Object msg: 就是客户端发送的数据 默认Object
+    1. 参数1：ChannelHandlerContext ctx:上下文对象, 含有 管道pipeline、通道channel、地址
+    2. 参数2：Object msg: 就是客户端发送的数据 默认Object
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
      //比如这里我们有一个非常耗时长的业务-> 异步执行 -> 提交该channel对应的NIOEventLoop 的 taskQueue中,
 
      //---------------------------------解决方案1 用户程序自定义的普通任务--------------------------------------------------
-//        任务1
-//        ctx.channel().eventLoop().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(5 * 1000);//任务1会在5秒后执行
-//                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~(>^ω^<)喵2", CharsetUtil.UTF_8));
-//                    System.out.println("channel code=" + ctx.channel().hashCode());
-//                } catch (Exception ex) {
-//                    System.out.println("发生异常" + ex.getMessage());
-//                }
-//            }
-//        });
-//	     任务2
-//        ctx.channel().eventLoop().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(5 * 1000);//任务2会在10秒后执行，要等任务1执行完才会执行任务2
-//                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~(>^ω^<)喵3", CharsetUtil.UTF_8));
-//                    System.out.println("channel code=" + ctx.channel().hashCode());
-//                } catch (Exception ex) {
-//                    System.out.println("发生异常" + ex.getMessage());
-//                }
-//            }
-//        });
+        //任务1
+        ctx.channel().eventLoop().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5 * 1000);//任务1：会在5秒后执行
+                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~(>^ω^<)喵2", CharsetUtil.UTF_8));
+                    System.out.println("channel code=" + ctx.channel().hashCode());
+                } catch (Exception ex) {
+                    System.out.println("发生异常" + ex.getMessage());
+                }
+            }
+        });
+	     //任务2
+        ctx.channel().eventLoop().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5 * 1000);//任务2：会在10秒后执行，要等任务1执行完才会执行任务2
+                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello, 客户端~(>^ω^<)喵3", CharsetUtil.UTF_8));
+                    System.out.println("channel code=" + ctx.channel().hashCode());
+                } catch (Exception ex) {
+                    System.out.println("发生异常" + ex.getMessage());
+                }
+            }
+        });
 
-//        System.out.println("go on ...");
+        //任务1和任务2由于耗时长，会先执行该输出语句
+        System.out.println("go on ...");
         //------------------------------------------------------------------------------------------------------------------
 
 
@@ -98,7 +93,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     //处理异常, 一般是需要关闭通道
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ctx.close();

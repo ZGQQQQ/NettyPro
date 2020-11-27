@@ -23,9 +23,9 @@ public class NIOServer {
         System.out.println("注册后的selectionkey 数量=" + selector.keys().size()); // 1
         //循环等待客户端连接
         while (true) {
-            //这里我们等待5秒，如果channel没有事件发生, 返回
-            if(selector.select(5000) == 0) { //没有事件发生
-                System.out.println("服务器等待了5秒，无连接");
+            //这里我们等待10秒，如果channel没有事件发生, 返回
+            if(selector.select(10000) == 0) { //没有事件发生
+                System.out.println("服务器等待了10秒，无连接");
                 continue;
             }
             //如果selector.select返回的>0, 就获取到发生事件变化的selectionKey集合
@@ -60,7 +60,7 @@ public class NIOServer {
                     ByteBuffer buffer = (ByteBuffer)key.attachment();
                     //将channel的数据读到buffer
                     channel.read(buffer);
-                    System.out.println("form 客户端 " + new String(buffer.array()));
+                    System.out.println("从客户端得到的消息为：" + new String(buffer.array()));
                 }
                 //手动从集合中删除当前的selectionKey, 防止重复操作
                 keyIterator.remove();
