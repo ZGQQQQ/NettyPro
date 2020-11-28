@@ -16,8 +16,6 @@ import java.util.Map;
 public class GroupChatServerHandler extends SimpleChannelInboundHandler<String> {
 
 	//public static List<Channel> channels = new ArrayList<Channel>();
-	//使用一个hashmap 管理
-	//public static Map<String, Channel> channels = new HashMap<String,Channel>();
 
 
 	//定义一个channel组，管理所有的channel(一个channel对应一个客户端)
