@@ -13,56 +13,52 @@ import java.util.Scanner;
 
 public class GroupChatClient {
 
-    //属性
-    private final String host;
-    private final int port;
+	private final String host;//服务器地址
+	private final int port;//服务器端口
 
-    public GroupChatClient(String host, int port) {
-        this.host = host;
-        this.port = port;
-    }
+	public GroupChatClient(String host, int port) {
+		this.host = host;
+		this.port = port;
+	}
 
-    public void run() throws Exception{
-        EventLoopGroup group = new NioEventLoopGroup();
+	public void run() throws Exception {
+		EventLoopGroup group = new NioEventLoopGroup();
 
-        try {
+		try {
+			Bootstrap bootstrap = new Bootstrap()
+					.group(group)
+					.channel(NioSocketChannel.class)
+					.handler(new ChannelInitializer<SocketChannel>() {
+						@Override
+						protected void initChannel(SocketChannel ch) throws Exception {
+							//得到pipeline
+							ChannelPipeline pipeline = ch.pipeline();
+							//加入相关handler
+							pipeline.addLast("decoder", new StringDecoder());
+							pipeline.addLast("encoder", new StringEncoder());
+							//加入自定义的handler
+							pipeline.addLast(new GroupChatClientHandler());
+						}
+					});
 
+			ChannelFuture channelFuture = bootstrap.connect(host, port).sync();
+			//得到channel
+			Channel channel = channelFuture.channel();
+			System.out.println("-------" + channel.localAddress() + "--------");
 
-        Bootstrap bootstrap = new Bootstrap()
-                .group(group)
-                .channel(NioSocketChannel.class)
-                .handler(new ChannelInitializer<SocketChannel>() {
+			//客户端需要输入信息，创建一个扫描器
+			Scanner scanner = new Scanner(System.in);
+			while (scanner.hasNextLine()) {
+				String msg = scanner.nextLine();
+				//通过channel 发送到服务器端
+				channel.writeAndFlush(msg + "\r\n");
+			}
+		} finally {
+			group.shutdownGracefully();
+		}
+	}
 
-                    @Override
-                    protected void initChannel(SocketChannel ch) throws Exception {
-
-                        //得到pipeline
-                        ChannelPipeline pipeline = ch.pipeline();
-                        //加入相关handler
-                        pipeline.addLast("decoder", new StringDecoder());
-                        pipeline.addLast("encoder", new StringEncoder());
-                        //加入自定义的handler
-                        pipeline.addLast(new GroupChatClientHandler());
-                    }
-                });
-
-        ChannelFuture channelFuture = bootstrap.connect(host, port).sync();
-        //得到channel
-            Channel channel = channelFuture.channel();
-            System.out.println("-------" + channel.localAddress()+ "--------");
-            //客户端需要输入信息，创建一个扫描器
-            Scanner scanner = new Scanner(System.in);
-            while (scanner.hasNextLine()) {
-                String msg = scanner.nextLine();
-                //通过channel 发送到服务器端
-                channel.writeAndFlush(msg + "\r\n");
-            }
-        }finally {
-            group.shutdownGracefully();
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        new GroupChatClient("127.0.0.1", 7000).run();
-    }
+	public static void main(String[] args) throws Exception {
+		new GroupChatClient("127.0.0.1", 11001).run();
+	}
 }

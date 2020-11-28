@@ -7,18 +7,14 @@ import java.nio.charset.Charset;
 
 public class NettyByteBuf02 {
     public static void main(String[] args) {
-
         //创建ByteBuf
         ByteBuf byteBuf = Unpooled.copiedBuffer("hello,world!", Charset.forName("utf-8"));
 
         //使用相关的方法
-        if(byteBuf.hasArray()) { // true
-
+        if(byteBuf.hasArray()) { //看ByteBuf有没有分配数组
             byte[] content = byteBuf.array();
-
             //将 content 转成字符串
             System.out.println(new String(content, Charset.forName("utf-8")));
-
             System.out.println("byteBuf=" + byteBuf);
 
             System.out.println(byteBuf.arrayOffset()); // 0
@@ -37,13 +33,9 @@ public class NettyByteBuf02 {
                 System.out.println((char) byteBuf.getByte(i));
             }
 
-            //按照某个范围读取
+            //读取netty缓冲区的指定范围
             System.out.println(byteBuf.getCharSequence(0, 4, Charset.forName("utf-8")));
             System.out.println(byteBuf.getCharSequence(4, 6, Charset.forName("utf-8")));
-
-
         }
-
-
     }
 }

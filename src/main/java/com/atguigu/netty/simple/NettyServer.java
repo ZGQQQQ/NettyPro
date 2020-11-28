@@ -24,7 +24,8 @@ public class NettyServer {
             //使用链式编程来进行设置
             serverBootstrap.group(bossGroup, workerGroup) //设置两个线程组
                     .channel(NioServerSocketChannel.class) //使用NioSocketChannel作为服务器的通道实现
-                    .option(ChannelOption.SO_BACKLOG, 128) // 设置线程队列得到连接个数
+					//多个客户端来请求服务器时，先将请求放到队列中，128就是设置队列的大小
+                    .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true) //设置保持活动连接状态
 //                    .handler(null) // handler对应的是bossGroup, childHandler对应的是workerGroup
                     .childHandler(new ChannelInitializer<SocketChannel>() {//创建一个通道初始化对象(匿名对象)
